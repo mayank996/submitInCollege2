@@ -16,11 +16,12 @@ const mongoSanitize = require('express-mongo-sanitize')
 
 const userRoutes = require('./routes/users')
 const siteRoutes = require('./routes/sites')
+const roomRoutes = require('./routes/rooms')
 const reviewRoutes = require('./routes/reviews')
 
 const Site = require('./models/site')
+const Room = require('./models/room')
 const catchAsync = require('./utils/catchAsync')
-const { strict } = require('assert')
 
 const MongoStore = require('connect-mongo');
 
@@ -144,12 +145,28 @@ app.use((req, res, next) => {
     next()
 })
 
-app.get('/autocomplete', catchAsync(async (req, res) => {
+app.get('/sites/autocomplete', catchAsync(async (req, res) => {
     const regex = new RegExp(req.query["term"], 'i')
     const sites = await Site.find({title: regex}, {title: 1}).sort({"updated_at": -1}).sort({"created_at": -1}).limit(20)
     let result = []
     if(sites.length>0){
         sites.forEach(s => {
+            let obj = {
+                id: s._id,
+                label: s.title
+            }
+            result.push(obj)
+        })
+    }
+    res.jsonp(result)
+}))
+
+app.get('/rooms/autocomplete', catchAsync(async (req, res) => {
+    const regex = new RegExp(req.query["term"], 'i')
+    const rooms = await Room.find({title: regex}, {title: 1}).sort({"updated_at": -1}).sort({"created_at": -1}).limit(20)
+    let result = []
+    if(rooms.length>0){
+        rooms.forEach(s => {
             let obj = {
                 id: s._id,
                 label: s.title
@@ -166,9 +183,17 @@ app.get('/findSite', catchAsync(async (req, res) => {
     res.redirect(`/sites/${site._id}`)
 }))
 
+app.get('/findRoom', catchAsync(async (req, res) => {
+    const { findRoom } = req.query
+    const room = await Room.findOne({title: findRoom})
+    res.redirect(`/rooms/${room._id}`)
+}))
+
 app.use('/', userRoutes)
 app.use('/sites', siteRoutes)
+app.use('/rooms', roomRoutes);
 app.use('/sites/:id/reviews', reviewRoutes)
+app.use('/rooms/:id/reviews', reviewRoutes)
 
 app.get('/', (req, res) => {
     res.render('home')

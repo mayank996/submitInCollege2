@@ -1,31 +1,31 @@
 <% layout('layouts/boilerplate') %>
-<div id="cluster-map"></div>
+<div id="cluster-map2"></div>
 <nav class="navbar navbar-light bg-light mb-3">
     <div class="container-fluid">
-      <form class="d-flex" action="/findSite" method="get">
-        <input class="form-control me-2" type="search" name="findSite" id="findSite" placeholder="Enter PG name" aria-label="Search">
+      <form class="d-flex" action="/findRoom" method="get">
+        <input class="form-control me-2" type="search" name="findRoom" id="findRoom" placeholder="Enter Room name" aria-label="Search">
         <button class="btn btn-outline-info" type="submit">Find</button>
       </form>
     </div>
 </nav>
-<% for(let site of sites){ %> 
+<% for(let room of rooms){ %> 
     <div class="card mb-3">
         <div class="row">
             <div class="col-md-4">
-                <% if(site.images.length) { %> 
-                    <img class="img-fluid" alt="" src="<%= site.images[0].url %>">
+                <% if(room.images.length) { %> 
+                    <img class="img-fluid" alt="" src="<%= room.images[0].url %>">
                 <% } else{ %>
                     <img class="img-fluid" alt="" src="https://res.cloudinary.com/m96/image/upload/v1629120924/findMyRoom/teax5sjkl0tpz3xe32po.jpg">
                 <% } %>
             </div>
             <div class="col-md-8">
                 <div class="card-body">
-                    <h5 class="card-title"><%= site.title %></h5>
-                    <p class="card-text"><%= site.description %></p>
+                    <h5 class="card-title"><%= room.title %></h5>
+                    <p class="card-text"><%= room.description %></p>
                     <p class="card-text">
-                        <small class="text-muted"><%= site.location %></small>
+                        <small class="text-muted"><%= room.location %></small>
                     </p>
-                    <a class="btn btn-primary" href="/sites/<%= site._id %>">View <%= site.title %></a>
+                    <a class="btn btn-primary" href="/rooms/<%= room._id %>">View <%= room.title %></a>
                 </div>
             </div>
         </div>
@@ -34,10 +34,10 @@
 
 <script>
     $(function(){
-        $('#findSite').autocomplete({
+        $('#findRoom').autocomplete({
             source: function(req, res){
                 $.ajax({
-                    url: '/sites/autocomplete',
+                    url: '/rooms/autocomplete',
                     dataType: 'jsonp',
                     type: 'GET',
                     data: req,
@@ -52,7 +52,7 @@
             minLength: 1,
             select: function(event, ui){
                 if(ui.item){
-                    $('#findSite').text(ui.item.label)
+                    $('#findRoom').text(ui.item.label)
                 }
             }
         })
@@ -60,6 +60,6 @@
 </script>
 <script>
     const mapToken = '<%- process.env.MAPBOX_TOKEN %>'
-    const sites = { features: <%- JSON.stringify(sites) %> }
+    const rooms = { features: <%- JSON.stringify(rooms) %> }
 </script>
-<script src="/javascripts/clusterMap.js"></script>
+<script src="/javascripts/clusterMap2.js"></script>

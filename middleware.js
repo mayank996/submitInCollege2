@@ -1,6 +1,7 @@
-const { siteSchema, reviewSchema } = require('./schemas')
+const { siteSchema, reviewSchema, roomSchema } = require('./schemas')
 const ExpressError = require('./utils/ExpressError')
 const Site = require('./models/site')
+const Room = require('./models/room')
 const Review = require('./models/review')
 
 /* 
@@ -47,6 +48,16 @@ module.exports.validateSite = (req, res, next) => {
     }
 }
 
+module.exports.validateRoom = (req, res, next) => {
+    const { error } = roomSchema.validate(req.body)
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+}
+
 module.exports.isAuthor = async (req, res, next) => {
     const { id } = req.params
     const site = await Site.findById(id)
@@ -62,7 +73,29 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     const review = await Review.findById(reviewId)
     if(!review.author.equals(req.user._id)){
         req.flash('error', 'You do not have the permission to do that!')
-        return res.redirect(`/sites/${id}`)
+
+        const firstUrlRoute = req.baseUrl.split('/')[1];
+        switch (firstUrlRoute) {
+            case 'sites':
+                {
+                    return res.redirect(`/sites/${id}`)
+                }
+
+            case 'rooms':
+                {
+                    return res.redirect(`/rooms/${id}`)
+                }
+        }
+    }
+    next()
+}
+
+module.exports.isAuthorR = async (req, res, next) => {
+    const { id } = req.params
+    const room = await Room.findById(id)
+    if(!room.author.equals(req.user._id)){
+        req.flash('error', 'You do not have the permission to do that!')
+        return res.redirect(`/rooms/${id}`)
     }
     next()
 }

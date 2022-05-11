@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose')
 const cities = require('./cities')
 const { places, descriptors } = require('./seedHelpers') 
-const Site = require('../models/site')
+const Room = require('../models/room');
 
 mongoose.connect(process.env.DB_URI, {
     "user": process.env.DB_USERNAME,
@@ -22,11 +22,11 @@ mongoose.connect(process.env.DB_URI, {
 const sample = array => array[Math.floor(Math.random()*array.length)]
 
 const seedDB = async () => {
-    await Site.deleteMany({});
+    await Room.deleteMany({});
     for(let i=0; i<300; i++){
         const random1000 = Math.floor(Math.random()*1000)
         const price = Math.floor(Math.random()*20)+10
-        const site = new Site({
+        const room = new Room({
             author: '627bb5c2d7eb392a87e0ec3f',
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
@@ -54,7 +54,7 @@ const seedDB = async () => {
                 }
               ]
         })
-        await site.save()
+        await room.save()
     }
 }
 
