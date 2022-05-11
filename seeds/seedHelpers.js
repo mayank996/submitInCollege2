@@ -1,0 +1,45 @@
+module.exports.descriptors = [
+    'Swiftville',
+    'Ancient',
+    'Lighthall',
+    'Lightstall',
+    'Honeyfell',
+    'Freyford',
+    'Amberville',
+    'Millfort',
+    'Chillpost',
+    'Maple',
+    'Misty',
+    'Oldglen',
+    'Westvein',
+    'Highville',
+    'Eaglestall',
+    'Rivershield',
+    'Silkland',
+    'Pearlham'
+]
+
+module.exports.places = [
+    'Flats',
+    'Crossing',
+    'County',
+    'Glad',
+    'Lagoon',
+    'Parish',
+    'Pass',
+    'Stream',
+    'Tam',
+    'Backcountry',
+    'City',
+    'Straits',
+    'Pass',
+    'Bay',
+    'Spring',
+    'Mire',
+    'Mounts',
+    'Crags',
+    'Brooks',
+    'Buff',
+    'Outpost'
+]
+
